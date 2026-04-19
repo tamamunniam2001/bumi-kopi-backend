@@ -5,7 +5,7 @@ const cors = require('cors')
 const app = express()
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://localhost:3001']
+  : ['http://localhost:3000', 'http://localhost:3001', 'https://drop-down-outsource-baggy.ngrok-free.dev', 'https://bumikopi.vercel.app']
 app.use(cors({ origin: allowedOrigins, credentials: true }))
 app.use(express.json())
 
