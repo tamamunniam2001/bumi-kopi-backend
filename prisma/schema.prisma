@@ -16,6 +16,7 @@ model User {
   isActive     Boolean       @default(true)
   createdAt    DateTime      @default(now())
   transactions Transaction[]
+  dailyReports DailyReport[]
 }
 
 model Category {
@@ -98,4 +99,21 @@ enum PayMethod {
 enum TxStatus {
   COMPLETED
   CANCELLED
+}
+
+model DailyReport {
+  id            String   @id @default(cuid())
+  date          DateTime @default(now())
+  kasAwal       Int      @default(0)
+  penjualan     Int      @default(0)
+  uangDisetor   Int      @default(0)
+  qris          Int      @default(0)
+  transfer      Int      @default(0)
+  pengeluaran   Json     @default("[]")
+  piutang       Json     @default("[]")
+  catatan       String?  @default("")
+  cashierId     String
+  cashier       User     @relation(fields: [cashierId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

@@ -272,5 +272,47 @@ module.exports = async (req, res) => {
     return res.json(Object.values(usageMap).sort((a, b) => b.totalQty - a.totalQty))
   }
 
+  // Daily Report
+  if (path === '/api/daily-reports' && method === 'GET') {
+    const user = verifyToken(req, res); if (!user) return
+    const { from, to, page = 1 } = query
+    const where = {}
+    if (user.role !== 'ADMIN') where.cashierId = user.id
+    if (from && to) where.date = { gte: new Date(from), lte: new Date(new Date(to).setHours(23, 59, 59, 999)) }
+    const [reports, total] = await Promise.all([
+      prisma.dailyReport.findMany({ where, include: { cashier: { select: { name: true } } }, orderBy: { date: 'desc' }, take: 20, skip: (Number(page) - 1) * 20 }),
+      prisma.dailyReport.count({ where }),
+    ])
+    return res.json({ reports, total, page: Number(page), totalPages: Math.ceil(total / 20) })
+  }
+  if (path === '/api/daily-reports' && method === 'POST') {
+    const user = verifyToken(req, res); if (!user) return
+    const { kasAwal, penjualan, uangDisetor, qris, transfer, pengeluaran, piutang, catatan } = req.body
+    const report = await prisma.dailyReport.create({
+      data: { kasAwal, penjualan, uangDisetor, qris, transfer, pengeluaran, piutang, catatan, cashierId: user.id },
+      include: { cashier: { select: { name: true } } },
+    })
+    return res.status(201).json(report)
+  }
+  const reportMatch = path.match(/^\/api\/daily-reports\/([^/]+)$/)
+  if (reportMatch) {
+    const user = verifyToken(req, res); if (!user) return
+    const id = reportMatch[1]
+    if (method === 'GET') {
+      const report = await prisma.dailyReport.findUnique({ where: { id }, include: { cashier: { select: { name: true } } } })
+      if (!report) return res.status(404).json({ message: 'Laporan tidak ditemukan' })
+      return res.json(report)
+    }
+    if (method === 'PUT') {
+      const { kasAwal, penjualan, uangDisetor, qris, transfer, pengeluaran, piutang, catatan } = req.body
+      const report = await prisma.dailyReport.update({
+        where: { id },
+        data: { kasAwal, penjualan, uangDisetor, qris, transfer, pengeluaran, piutang, catatan },
+        include: { cashier: { select: { name: true } } },
+      })
+      return res.json(report)
+    }
+  }
+
   res.status(404).json({ message: 'Not found' })
 }
