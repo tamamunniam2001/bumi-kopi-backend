@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [{ "src": "api/**/*.js", "use": "@vercel/node" }],
+  "routes": [
+    { "src": "/api/health", "dest": "/api/health.js" },
+    { "src": "/api/auth/login", "dest": "/api/auth/login.js" },
+    { "src": "/api/products/bulk", "dest": "/api/products/bulk.js" },
+    { "src": "/api/products/([^/]+)", "dest": "/api/products/[id].js" },
+    { "src": "/api/products", "dest": "/api/products/index.js" },
+    { "src": "/api/transactions", "dest": "/api/transactions/index.js" },
+    { "src": "/api/admin/dashboard", "dest": "/api/admin/dashboard.js" },
+    { "src": "/api/admin/categories/([^/]+)", "dest": "/api/admin/categories/[id].js" },
+    { "src": "/api/admin/categories", "dest": "/api/admin/categories.js" },
+    { "src": "/api/admin/users/([^/]+)", "dest": "/api/admin/users/[id].js" },
+    { "src": "/api/admin/users", "dest": "/api/admin/users/index.js" },
+    { "src": "/api/admin/ingredients/([^/]+)", "dest": "/api/admin/ingredients/[id].js" },
+    { "src": "/api/admin/ingredients", "dest": "/api/admin/ingredients/index.js" },
+    { "src": "/api/admin/ingredient-usage", "dest": "/api/admin/ingredient-usage.js" }
+  ]
+}
