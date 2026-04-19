@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "builds": [{ "src": "api/**/*.js", "use": "@vercel/node" }],
   "routes": [
     { "src": "/api/health", "dest": "/api/health.js" },
     { "src": "/api/auth/login", "dest": "/api/auth/login.js" },
